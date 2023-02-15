@@ -1,0 +1,27 @@
+Source: snowflake-client
+Maintainer: Debian Privacy Tools Maintainers <pkg-privacy-maintainers@lists.alioth.debian.org>
+Uploaders: Jérémy Bobbio <lunar@debian.org>, Ximin Luo <infinity0@debian.org>
+Section: net
+Priority: extra
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.8
+Vcs-Git: https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake.git
+Vcs-Browser: https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake.git
+XS-Go-Import-Path: https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake.git
+
+Package: snowflake-client
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: pluggable transport proxy for Tor, implementing snowflake
+ snowflake is a tool that attempts to circumvent censorship by
+ transforming the Tor traffic between the client and the bridge. This way
+ censors, who usually monitor traffic between the client and the bridge, will
+ see innocent-looking transformed traffic instead of the actual Tor traffic.
+ .
+ snowflake implements the obfsucation protocol snowflake.
+ .
+ It is written in Go and is compliant with the Tor pluggable transports
+ specification, and its modular architecture allows it to support multiple
+ pluggable transports.
+ .
+ This package contains both the client and the bridge in a single program.
