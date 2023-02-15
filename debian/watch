@@ -1,0 +1,4 @@
+version=3
+opts="uversionmangle=s/-(rc)/~$1/,pgpsigurlmangle=s/$/.asc/" \
+	https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/-/releases/ \
+	snowflake-(.+)\.tar\.[^.]+
