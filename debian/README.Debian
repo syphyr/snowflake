@@ -1,0 +1,18 @@
+snowflake-client for Debian
+=====================
+
+Using a snowflake bridge
+---------------------
+
+To use a snowflake bridge, please add the following lines to
+`/etc/tor/torrc`:
+
+    ClientTransportPlugin snowflake exec /usr/bin/snowflake-client
+    UseBridges 1
+
+Then for each bridges, add a line looking like the following one:
+
+    Bridge snowflake 192.0.2.3:1 2B280B2...
+
+Actual Bridge lines are usually given by Tor Project's bridge database
+or by the bridge operator directly.
