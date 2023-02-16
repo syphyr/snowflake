@@ -19,3 +19,4 @@ ignore/
 /tools/
 
 dist/
+.cache
