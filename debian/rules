@@ -7,7 +7,7 @@ CFG = ${OUT}/etc/${PROJECT}
 export DH_OPTIONS
 export DH_GOPKG := git.torproject.org/pluggable-transports/snowflake.git/v2
 export GOCACHE := ${CURDIR}/.cache
-# export GOFLAGS := -ldflags=-w -ldflags=-s -mod=vendor
+export GOFLAGS := -ldflags=-w -ldflags=-s
 export PATH := /usr/local/src/golang/go/bin:${PATH}
 
 %:
