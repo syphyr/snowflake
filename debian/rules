@@ -2,7 +2,6 @@
 
 PROJECT = snowflake-client
 OUT = ${CURDIR}/debian/${PROJECT}
-CFG = ${OUT}/etc/${PROJECT}
 
 export DH_OPTIONS
 export DH_GOPKG := git.torproject.org/pluggable-transports/snowflake.git/v2
@@ -22,7 +21,6 @@ override_dh_auto_clean:
 override_dh_auto_install:
 	dh_auto_install --destdir="${OUT}"
 	install -Dm755 "client/client" "${OUT}/usr/bin/${PROJECT}"
-#	install -Dm644 "${PROJECT}/config" "${CFG}/config"
 
 override_dh_auto_test:
 
