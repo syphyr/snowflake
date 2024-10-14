@@ -1,10 +1,13 @@
 FROM docker.io/library/golang:latest AS build
 
 
-ADD . /app
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . ./
 
 WORKDIR /app/proxy
-RUN go get
 RUN CGO_ENABLED=0 go build -o proxy -ldflags '-extldflags "-static" -w -s'  .
 
 FROM containers.torproject.org/tpo/tpa/base-images/debian:bookworm as debian-base
