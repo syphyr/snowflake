@@ -1,3 +1,9 @@
+snowflake-client (2.10.1-1b) unstable; urgency=medium
+
+  * Upstream
+
+ -- syphyr <syphyr@gmail.com>  Tue, 12 Nov 2024 21:39:50 +0100
+
 snowflake-client (2.9.2-1b) unstable; urgency=medium
 
   * Upstream
