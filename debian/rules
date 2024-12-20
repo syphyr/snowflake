@@ -22,6 +22,3 @@ override_dh_auto_install:
 	dh_auto_install --destdir="${OUT}"
 	install -Dm755 "client/client" "${OUT}/usr/bin/${PROJECT}"
 
-override_dh_auto_test:
-
-override_dh_dwz:
