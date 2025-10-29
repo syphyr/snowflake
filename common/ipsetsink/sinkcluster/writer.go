@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"sync"
 	"time"
 
 	"gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2/common/ipsetsink"
@@ -25,6 +26,7 @@ type ClusterWriter struct {
 	lastWriteTime time.Time
 	writeInterval time.Duration
 	current       *ipsetsink.IPSetSink
+	lock          sync.Mutex
 }
 
 type WriteSyncer interface {
@@ -61,6 +63,8 @@ func (c *ClusterWriter) WriteIPSetToDisk() {
 }
 
 func (c *ClusterWriter) AddIPToSet(ipAddress string) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
 	if c.lastWriteTime.Add(c.writeInterval).Before(time.Now()) {
 		c.WriteIPSetToDisk()
 	}
