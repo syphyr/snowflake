@@ -11,6 +11,7 @@ import (
 	"context"
 	"crypto/tls"
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -203,7 +204,7 @@ func main() {
 	var certFilename, keyFilename string
 	var disableGeoip bool
 	var metricsFilename string
-	var ipCountFilename, ipCountMaskingKey string
+	var ipCountPrefix, ipCountMaskingKey string
 	var ipCountInterval time.Duration
 	var unsafeLogging bool
 
@@ -222,7 +223,7 @@ func main() {
 	flag.BoolVar(&disableTLS, "disable-tls", false, "don't use HTTPS")
 	flag.BoolVar(&disableGeoip, "disable-geoip", false, "don't use geoip for stats collection")
 	flag.StringVar(&metricsFilename, "metrics-log", "", "path to metrics logging output")
-	flag.StringVar(&ipCountFilename, "ip-count-log", "", "path to ip count logging output")
+	flag.StringVar(&ipCountPrefix, "ip-count-prefix", "", "path prefix to ip count logging output")
 	flag.StringVar(&ipCountMaskingKey, "ip-count-mask", "", "masking key for ip count logging")
 	flag.DurationVar(&ipCountInterval, "ip-count-interval", time.Hour, "time interval between each chunk")
 	flag.BoolVar(&unsafeLogging, "unsafe-logging", false, "prevent logs from being scrubbed")
@@ -272,14 +273,20 @@ func main() {
 		}
 	}
 
-	if ipCountFilename != "" {
-		ipCountFile, err := os.OpenFile(ipCountFilename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-
+	if ipCountPrefix != "" {
+		restrictedCountFile, err := os.OpenFile(fmt.Sprintf("%s-restricted.log", ipCountPrefix), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
+
+		unrestrictedCountFile, err := os.OpenFile(fmt.Sprintf("%s-unrestricted.log", ipCountPrefix), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+
 		ipSetSink := ipsetsink.NewIPSetSink(ipCountMaskingKey)
-		ctx.metrics.distinctIPWriter = sinkcluster.NewClusterWriter(ipCountFile, ipCountInterval, ipSetSink)
+		ctx.metrics.restrictedIPWriter = sinkcluster.NewClusterWriter(restrictedCountFile, ipCountInterval, ipSetSink)
+		ctx.metrics.unrestrictedIPWriter = sinkcluster.NewClusterWriter(unrestrictedCountFile, ipCountInterval, ipSetSink)
 	}
 
 	go ctx.Broker()
