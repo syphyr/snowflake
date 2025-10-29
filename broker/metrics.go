@@ -397,7 +397,3 @@ func (m *Metrics) RecordIPAddress(ip string) {
 		m.distinctIPWriter.AddIPToSet(ip)
 	}
 }
-
-func (m *Metrics) SetIPAddressRecorder(recorder *sinkcluster.ClusterWriter) {
-	m.distinctIPWriter = recorder
-}
