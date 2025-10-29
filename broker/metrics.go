@@ -18,6 +18,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"gitlab.torproject.org/tpo/anti-censorship/geoip"
 	"gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/ptutil/safeprom"
+	"gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2/common/ipsetsink/sinkcluster"
 	"gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2/common/messages"
 )
 
@@ -32,6 +33,8 @@ type Metrics struct {
 
 	ips      *sync.Map // proxy IP addresses we've seen before
 	counters *sync.Map // counters for ip-based metrics
+
+	distinctIPWriter *sinkcluster.ClusterWriter
 
 	// counters for country-based metrics
 	proxies         *sync.Map // ip-based counts of proxy country codes
@@ -387,4 +390,14 @@ func initPrometheus() *PromMetrics {
 	)
 
 	return promMetrics
+}
+
+func (m *Metrics) RecordIPAddress(ip string) {
+	if m.distinctIPWriter != nil {
+		m.distinctIPWriter.AddIPToSet(ip)
+	}
+}
+
+func (m *Metrics) SetIPAddressRecorder(recorder *sinkcluster.ClusterWriter) {
+	m.distinctIPWriter = recorder
 }
