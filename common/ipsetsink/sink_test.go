@@ -2,14 +2,16 @@ package ipsetsink
 
 import (
 	"fmt"
-	"github.com/clarkduvall/hyperloglog"
 	"testing"
+
+	"github.com/clarkduvall/hyperloglog"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
-import . "github.com/smartystreets/goconvey/convey"
 
 func TestSinkInit(t *testing.T) {
 	Convey("Context", t, func() {
-		sink := NewIPSetSink("demo")
+		sink := NewIPSetSink([]byte("demo"))
 		sink.AddIPToSet("test1")
 		sink.AddIPToSet("test2")
 		data, err := sink.Dump()
@@ -26,7 +28,7 @@ func TestSinkInit(t *testing.T) {
 func TestSinkCounting(t *testing.T) {
 	Convey("Context", t, func() {
 		for itemCount := 300; itemCount <= 10000; itemCount += 200 {
-			sink := NewIPSetSink("demo")
+			sink := NewIPSetSink([]byte("demo"))
 			for i := 0; i <= itemCount; i++ {
 				sink.AddIPToSet(fmt.Sprintf("demo%v", i))
 			}

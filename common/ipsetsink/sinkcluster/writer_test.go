@@ -24,7 +24,7 @@ func TestSinkWriter(t *testing.T) {
 	Convey("Context", t, func() {
 		buffer := bytes.NewBuffer(nil)
 		writerStubInst := &writerStub{buffer}
-		sink := ipsetsink.NewIPSetSink("demo")
+		sink := ipsetsink.NewIPSetSink([]byte("demo"))
 		clusterWriter := NewClusterWriter(writerStubInst, time.Minute, sink)
 		clusterWriter.AddIPToSet("1")
 		clusterWriter.WriteIPSetToDisk()

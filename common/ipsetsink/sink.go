@@ -10,7 +10,7 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
-func NewIPSetSink(maskingKey string) *IPSetSink {
+func NewIPSetSink(maskingKey []byte) *IPSetSink {
 	countDistinct, _ := hyperloglog.NewPlus(18)
 	return &IPSetSink{
 		ipMaskingKey:  maskingKey,
@@ -19,14 +19,14 @@ func NewIPSetSink(maskingKey string) *IPSetSink {
 }
 
 type IPSetSink struct {
-	ipMaskingKey  string
+	ipMaskingKey  []byte
 	countDistinct *hyperloglog.HyperLogLogPlus
 }
 
 func (s *IPSetSink) maskIPAddress(ipAddress string) []byte {
 	hmacIPMasker := hmac.New(func() hash.Hash {
 		return sha3.New256()
-	}, []byte(s.ipMaskingKey))
+	}, s.ipMaskingKey)
 	hmacIPMasker.Write([]byte(ipAddress))
 	return hmacIPMasker.Sum(nil)
 }

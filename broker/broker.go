@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"container/heap"
 	"context"
+	"crypto/rand"
 	"crypto/tls"
 	"flag"
 	"fmt"
@@ -204,7 +205,7 @@ func main() {
 	var certFilename, keyFilename string
 	var disableGeoip bool
 	var metricsFilename string
-	var ipCountPrefix, ipCountMaskingKey string
+	var ipCountPrefix string
 	var ipCountInterval time.Duration
 	var unsafeLogging bool
 
@@ -224,7 +225,6 @@ func main() {
 	flag.BoolVar(&disableGeoip, "disable-geoip", false, "don't use geoip for stats collection")
 	flag.StringVar(&metricsFilename, "metrics-log", "", "path to metrics logging output")
 	flag.StringVar(&ipCountPrefix, "ip-count-prefix", "", "path prefix to ip count logging output")
-	flag.StringVar(&ipCountMaskingKey, "ip-count-mask", "", "masking key for ip count logging")
 	flag.DurationVar(&ipCountInterval, "ip-count-interval", time.Hour, "time interval between each chunk")
 	flag.BoolVar(&unsafeLogging, "unsafe-logging", false, "prevent logs from being scrubbed")
 	flag.Parse()
@@ -283,8 +283,11 @@ func main() {
 		if err != nil {
 			log.Fatal(err.Error())
 		}
-
-		ipSetSink := ipsetsink.NewIPSetSink(ipCountMaskingKey)
+		var ipCountMaskingKey [32]byte
+		if _, err := rand.Read(ipCountMaskingKey[:]); err != nil {
+			panic(err)
+		}
+		ipSetSink := ipsetsink.NewIPSetSink(ipCountMaskingKey[:])
 		ctx.metrics.restrictedIPWriter = sinkcluster.NewClusterWriter(restrictedCountFile, ipCountInterval, ipSetSink)
 		ctx.metrics.unrestrictedIPWriter = sinkcluster.NewClusterWriter(unrestrictedCountFile, ipCountInterval, ipSetSink)
 	}
