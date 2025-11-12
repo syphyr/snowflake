@@ -274,12 +274,12 @@ func main() {
 	}
 
 	if ipCountPrefix != "" {
-		restrictedCountFile, err := os.OpenFile(fmt.Sprintf("%s-restricted.log", ipCountPrefix), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+		restrictedCountFile, err := os.OpenFile(fmt.Sprintf("%s-restricted-%s.log", ipCountPrefix, time.Now().Format(time.RFC3339)), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
 
-		unrestrictedCountFile, err := os.OpenFile(fmt.Sprintf("%s-unrestricted.log", ipCountPrefix), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+		unrestrictedCountFile, err := os.OpenFile(fmt.Sprintf("%s-unrestricted-%s.log", ipCountPrefix, time.Now().Format(time.RFC3339)), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
