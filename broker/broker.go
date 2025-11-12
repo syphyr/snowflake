@@ -284,7 +284,7 @@ func main() {
 			log.Fatal(err.Error())
 		}
 		var ipCountMaskingKey [32]byte
-		if _, err := rand.Read(ipCountMaskingKey[:]); err != nil {
+		if n, err := rand.Read(ipCountMaskingKey[:]); (n < 32) || (err != nil) {
 			panic(err)
 		}
 		ipSetSink := ipsetsink.NewIPSetSink(ipCountMaskingKey[:])
