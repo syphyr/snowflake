@@ -287,9 +287,10 @@ func main() {
 		if n, err := rand.Read(ipCountMaskingKey[:]); (n < 32) || (err != nil) {
 			panic(err)
 		}
-		ipSetSink := ipsetsink.NewIPSetSink(ipCountMaskingKey[:])
-		ctx.metrics.restrictedIPWriter = sinkcluster.NewClusterWriter(restrictedCountFile, ipCountInterval, ipSetSink)
-		ctx.metrics.unrestrictedIPWriter = sinkcluster.NewClusterWriter(unrestrictedCountFile, ipCountInterval, ipSetSink)
+		restrictedIpSetSink := ipsetsink.NewIPSetSink(ipCountMaskingKey[:])
+		unrestrictedIpSetSink := ipsetsink.NewIPSetSink(ipCountMaskingKey[:])
+		ctx.metrics.restrictedIPWriter = sinkcluster.NewClusterWriter(restrictedCountFile, ipCountInterval, restrictedIpSetSink)
+		ctx.metrics.unrestrictedIPWriter = sinkcluster.NewClusterWriter(unrestrictedCountFile, ipCountInterval, unrestrictedIpSetSink)
 	}
 
 	go ctx.Broker()
