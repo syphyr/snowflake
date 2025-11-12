@@ -34,8 +34,7 @@ type Metrics struct {
 	ips      *sync.Map // proxy IP addresses we've seen before
 	counters *sync.Map // counters for ip-based metrics
 
-	restrictedIPWriter   *sinkcluster.ClusterWriter
-	unrestrictedIPWriter *sinkcluster.ClusterWriter
+	distinctIPWriter *sinkcluster.ClusterWriter
 
 	// counters for country-based metrics
 	proxies         *sync.Map // ip-based counts of proxy country codes
@@ -394,10 +393,11 @@ func initPrometheus() *PromMetrics {
 }
 
 func (m *Metrics) RecordIPAddress(ip string, restricted bool) {
-	if restricted && m.restrictedIPWriter != nil {
-		m.restrictedIPWriter.AddIPToSet(ip)
-	}
-	if !restricted && m.unrestrictedIPWriter != nil {
-		m.unrestrictedIPWriter.AddIPToSet(ip)
+	if m.distinctIPWriter != nil {
+		if restricted {
+			m.distinctIPWriter.AddIPToSet("restricted", ip)
+		} else {
+			m.distinctIPWriter.AddIPToSet("unrestricted", ip)
+		}
 	}
 }

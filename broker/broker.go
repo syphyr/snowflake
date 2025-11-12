@@ -23,7 +23,6 @@ import (
 	"syscall"
 	"time"
 
-	"gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2/common/ipsetsink"
 	"gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2/common/ipsetsink/sinkcluster"
 
 	"gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2/common/bridgefingerprint"
@@ -287,10 +286,11 @@ func main() {
 		if n, err := rand.Read(ipCountMaskingKey[:]); (n < 32) || (err != nil) {
 			panic(err)
 		}
-		restrictedIpSetSink := ipsetsink.NewIPSetSink(ipCountMaskingKey[:])
-		unrestrictedIpSetSink := ipsetsink.NewIPSetSink(ipCountMaskingKey[:])
-		ctx.metrics.restrictedIPWriter = sinkcluster.NewClusterWriter(restrictedCountFile, ipCountInterval, restrictedIpSetSink)
-		ctx.metrics.unrestrictedIPWriter = sinkcluster.NewClusterWriter(unrestrictedCountFile, ipCountInterval, unrestrictedIpSetSink)
+		ctx.metrics.distinctIPWriter = sinkcluster.NewClusterWriter(
+			map[string]sinkcluster.WriteSyncer{
+				"restricted":   restrictedCountFile,
+				"unrestricted": unrestrictedCountFile,
+			}, ipCountMaskingKey, ipCountInterval)
 	}
 
 	go ctx.Broker()
