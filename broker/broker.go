@@ -273,23 +273,30 @@ func main() {
 	}
 
 	if ipCountPrefix != "" {
-		restrictedCountFile, err := os.OpenFile(fmt.Sprintf("%s-restricted-%s.log", ipCountPrefix, time.Now().Format(time.RFC3339)), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Fatal(err.Error())
+		var err error
+		files := make(map[string]*os.File)
+		for _, name := range []string{"restricted", "unrestricted",
+			"standalone", "browser", "mobile", "unknown"} {
+
+			files[name], err = os.OpenFile(fmt.Sprintf("%s-%s-%s.log", ipCountPrefix,
+				name, time.Now().Format(time.RFC3339)), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+			if err != nil {
+				log.Fatal(err.Error())
+			}
 		}
 
-		unrestrictedCountFile, err := os.OpenFile(fmt.Sprintf("%s-unrestricted-%s.log", ipCountPrefix, time.Now().Format(time.RFC3339)), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Fatal(err.Error())
-		}
 		var ipCountMaskingKey [32]byte
 		if n, err := rand.Read(ipCountMaskingKey[:]); (n < 32) || (err != nil) {
 			panic(err)
 		}
 		ctx.metrics.distinctIPWriter = sinkcluster.NewClusterWriter(
 			map[string]sinkcluster.WriteSyncer{
-				"restricted":   restrictedCountFile,
-				"unrestricted": unrestrictedCountFile,
+				"restricted":   files["restricted"],
+				"unrestricted": files["unrestricted"],
+				"standalone":   files["standalone"],
+				"browser":      files["browser"],
+				"mobile":       files["mobile"],
+				"unknown":      files["unknown"],
 			}, ipCountMaskingKey, ipCountInterval)
 	}
 

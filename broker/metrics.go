@@ -392,12 +392,24 @@ func initPrometheus() *PromMetrics {
 	return promMetrics
 }
 
-func (m *Metrics) RecordIPAddress(ip string, restricted bool) {
+func (m *Metrics) RecordIPAddress(ip string, restricted bool, proxyType string) {
 	if m.distinctIPWriter != nil {
 		if restricted {
 			m.distinctIPWriter.AddIPToSet("restricted", ip)
 		} else {
 			m.distinctIPWriter.AddIPToSet("unrestricted", ip)
+		}
+		switch proxyType {
+		case "standalone":
+			m.distinctIPWriter.AddIPToSet("browser", ip)
+		case "badge":
+			fallthrough
+		case "web":
+			m.distinctIPWriter.AddIPToSet("browser", ip)
+		case "iptproxy":
+			m.distinctIPWriter.AddIPToSet("mobile", ip)
+		default:
+			m.distinctIPWriter.AddIPToSet("unknown", ip)
 		}
 	}
 }

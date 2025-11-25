@@ -99,7 +99,7 @@ func (i *IPC) ProxyPolls(arg messages.Arg, response *[]byte) error {
 		log.Println("Warning: cannot process proxy IP: ", err.Error())
 	} else {
 		i.ctx.metrics.UpdateProxyStats(remoteIP, proxyType, natType)
-		go i.ctx.metrics.RecordIPAddress(remoteIP, natType == NATUnrestricted)
+		go i.ctx.metrics.RecordIPAddress(remoteIP, natType == NATUnrestricted, proxyType)
 	}
 
 	var b []byte
