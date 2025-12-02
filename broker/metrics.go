@@ -401,10 +401,10 @@ func (m *Metrics) RecordIPAddress(ip string, restricted bool, proxyType string) 
 		}
 		switch proxyType {
 		case "standalone":
-			m.distinctIPWriter.AddIPToSet("browser", ip)
+			m.distinctIPWriter.AddIPToSet("standalone", ip)
 		case "badge":
 			fallthrough
-		case "web":
+		case "webext":
 			m.distinctIPWriter.AddIPToSet("browser", ip)
 		case "iptproxy":
 			m.distinctIPWriter.AddIPToSet("mobile", ip)
