@@ -64,18 +64,18 @@ nfpms:
       - src: doc/snowflake-proxy.1
         dst: /usr/share/man/man1/
         file_info:
-          mode: 644
+          mode: 420
 
       - src: debian/snowflake-proxy.defaults
         dst: /etc/defaults/snowflake-proxy
         type: config
         file_info:
-          mode: 644
+          mode: 420
 
       - src: debian/snowflake-proxy.service
         dst: /usr/lib/systemd/system/
         file_info:
-          mode: 644
+          mode: 420
     scripts:
       postinstall: "debian/snowflake-proxy.postinst"
       preremove: "debian/snowflake-proxy.prerm"
@@ -108,7 +108,7 @@ nfpms:
       - src: doc/snowflake-client.1
         dst: /usr/share/man/man1/
         file_info:
-          mode: 644
+          mode: 420
     formats:
       - deb
     deb:
