@@ -151,6 +151,8 @@ type SnowflakeProxy struct {
 	// that this proxy will forward client connections to,
 	// in case the broker itself did not specify the said URL
 	RelayURL string
+	// The name of the network interface to use for ICE candidates. If not specified, all interfaces will be used.
+	Interface string
 	// OutboundAddress specify an IP address to use as SDP host candidate
 	OutboundAddress string
 	// EphemeralMinPort and EphemeralMaxPort limit the range of ports that
@@ -428,6 +430,12 @@ func (sf *SnowflakeProxy) makeWebRTCAPI() *webrtc.API {
 	settingsEngine := webrtc.SettingEngine{}
 
 	settingsEngine.SetIncludeLoopbackCandidate(sf.KeepLocalAddresses)
+
+	if sf.Interface != "" {
+		settingsEngine.SetInterfaceFilter(func(name string) bool {
+			return name == sf.Interface
+		})
+	}
 
 	// Use the SetNet setting https://pkg.go.dev/github.com/pion/webrtc/v3#SettingEngine.SetNet
 	// to get snowflake working in shadow (where the AF_NETLINK family is not implemented).
