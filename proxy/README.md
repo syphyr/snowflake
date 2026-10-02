@@ -61,6 +61,9 @@ Usage of ./proxy:
         path to correctly formatted geoip database mapping IPv6 address ranges to country codes (default "/usr/share/tor/geoip6")
   -geoipdb string
         path to correctly formatted geoip database mapping IPv4 address ranges to country codes (default "/usr/share/tor/geoip")
+  -interface string
+        Set network interface to use for peer connections with clients. If not specified, all interfaces will be used.
+        This option is an alternative and more robust way of setting --outbound-address and should be preferred to that option.
   -keep-local-addresses
         keep local LAN address ICE candidates.
         This is usually pointless because Snowflake clients don't usually reside on the same local network as the proxy.
