@@ -143,7 +143,6 @@ func GetSnowflakeIp(req *http.Request, hops int) string {
 		strat = realclientip.RemoteAddrStrategy{}
 	} else {
 		strat = realclientip.NewChainStrategy(
-			realclientip.Must(realclientip.NewRightmostTrustedCountStrategy("Forwarded", hops)),
 			realclientip.Must(realclientip.NewRightmostTrustedCountStrategy("X-Forwarded-For", hops)),
 			realclientip.RemoteAddrStrategy{},
 		)
