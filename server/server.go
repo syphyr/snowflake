@@ -70,7 +70,7 @@ func proxy(local *net.TCPConn, conn net.Conn) {
 
 // handleConn bidirectionally connects a client snowflake connection with the
 // ORPort. If orPortSrcAddr is not nil, addresses from the given range are used
-// when dialing the ORPOrt.
+// when dialing the ORPort.
 func handleConn(conn net.Conn, orPortSrcAddr *net.IPNet) error {
 	addr := conn.RemoteAddr().String()
 	statsChannel <- addr != ""
@@ -98,7 +98,7 @@ func handleConn(conn net.Conn, orPortSrcAddr *net.IPNet) error {
 
 // acceptLoop accepts incoming client snowflake connections and passes them to
 // handleConn. If orPortSrcAddr is not nil, addresses from the given range are
-// used when dialing the ORPOrt.
+// used when dialing the ORPort.
 func acceptLoop(ln net.Listener, orPortSrcAddr *net.IPNet) {
 	for {
 		conn, err := ln.Accept()
